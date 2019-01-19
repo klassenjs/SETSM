@@ -90,7 +90,7 @@ void OpenXMLFile_orientation(char* _filename, ImageInfo *Iinfo);
 void SetDEMBoundary(double** _rpcs, double* _res,TransParam _param, bool _hemisphere, double* _boundary, double* _minmaxheight, CSize* _imagesize, double* _Hinterval);
 bool subsetImage(TransParam transparam, uint8 NumofIAparam, double **LRPCs, double *LImageParam, char *LImageFilename, double **RRPCs, double *RImageParam, char *RImageFilename, 
 				 double *subBoundary, double *minmaxHeight, D2DPOINT *Lstartpos, D2DPOINT *Rstartpos, char *LsubsetImage, char *RsubsetImage, CSize* Lsubsetsize, CSize* Rsubsetsize, FILE *fid,bool check_checktiff);
-D2DPOINT* wgs2ps(TransParam _param, int _numofpts, D2DPOINT *_wgs);
+D2DPOINT* wgs2ps(TransParam _param, int _numofpts, D2DPOINT *_wgs, D2DPOINT *_ps);
 D2DPOINT wgs2ps_single(TransParam _param, D2DPOINT _wgs);
 D3DPOINT* wgs2ps_3D(TransParam _param, int _numofpts, D3DPOINT *_wgs);
 D2DPOINT* ps2wgs(TransParam _param, int _numofpts, D2DPOINT *_ps);

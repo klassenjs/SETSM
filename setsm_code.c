@@ -6957,7 +6957,7 @@ void SetDEMBoundary(double** _rpcs, double* _res,TransParam _param, bool _hemisp
         _minmaxheight[0] = -100;
     }
     
-    D2DPOINT *lonlat = (D2DPOINT *) malloc(sizeof(D2DPOINT) * 4);
+    D2DPOINT lonlat[4];
     lonlat[0].m_X = minLon;
     lonlat[0].m_Y = minLat;
     lonlat[1].m_X = minLon;
@@ -6966,7 +6966,8 @@ void SetDEMBoundary(double** _rpcs, double* _res,TransParam _param, bool _hemisp
     lonlat[2].m_Y = maxLat;
     lonlat[3].m_X = maxLon;
     lonlat[3].m_Y = minLat;
-    D2DPOINT *XY = wgs2ps(_param, 4, lonlat);
+    D2DPOINT XY[4];
+    wgs2ps(_param, 4, lonlat, XY); // TODO: check fail (returns NULL/false)
     
     double minX = min(XY[3].m_X, min(XY[2].m_X, min(XY[0].m_X, XY[1].m_X)));
     double maxX = max(XY[3].m_X, max(XY[2].m_X, max(XY[0].m_X, XY[1].m_X)));
@@ -6981,9 +6982,6 @@ void SetDEMBoundary(double** _rpcs, double* _res,TransParam _param, bool _hemisp
     
     _imagesize->height = (unsigned int) (ceil((_boundary[3] - _boundary[1]) / _res[1]));
     _imagesize->width = (unsigned int) (ceil((_boundary[2] - _boundary[0]) / _res[0]));
-    
-    free(lonlat);
-    free(XY);
 }
 
 
@@ -7063,7 +7061,7 @@ bool subsetImage(TransParam transparam, uint8 NumofIAparam, double **LRPCs, doub
     return ret;
 }
 
-D2DPOINT *wgs2ps(TransParam _param, int _numofpts, D2DPOINT *_wgs) {
+D2DPOINT *wgs2ps(TransParam _param, int _numofpts, D2DPOINT *_wgs, D2DPOINT *_ps) {
     int m_NumOfPts = _numofpts;
     
     if(_param.projection == 1)
@@ -7079,8 +7077,8 @@ D2DPOINT *wgs2ps(TransParam _param, int _numofpts, D2DPOINT *_wgs) {
         double m_c = _param.m_c;
         D2DPOINT *m_sPS;
         
-        if (m_NumOfPts > 0) {
-            m_sPS = (D2DPOINT *) malloc(sizeof(D2DPOINT) * m_NumOfPts);
+        if (m_NumOfPts > 0 && _ps != NULL) {
+            m_sPS = _ps;
         } else {
             return false;
         }
@@ -7110,8 +7108,8 @@ D2DPOINT *wgs2ps(TransParam _param, int _numofpts, D2DPOINT *_wgs) {
         int Huso = _param.zone;
         
         D2DPOINT *m_sPS;
-        if (m_NumOfPts > 0) {
-            m_sPS = (D2DPOINT *) malloc(sizeof(D2DPOINT) * m_NumOfPts);
+        if (m_NumOfPts > 0 && _ps != NULL) {
+            m_sPS = _ps;
         } else {
             return false;
         }
@@ -17615,8 +17613,8 @@ bool SetOrthoBoundary_ortho(CSize *Imagesize, double *Boundary,
     minLat          = -1.15*RPCs[1][3] + RPCs[0][3];
     maxLat          =  1.15*RPCs[1][3] + RPCs[0][3];
     
-    D2DPOINT *XY    = (D2DPOINT*)malloc(sizeof(D2DPOINT)*4);
-    D2DPOINT *LonLat= (D2DPOINT*)malloc(sizeof(D2DPOINT)*4);
+    D2DPOINT XY[4];
+    D2DPOINT LonLat[4];
     double t_minX, t_maxX, t_minY, t_maxY;
     
     LonLat[0].m_X = minLon;
@@ -17628,7 +17626,7 @@ bool SetOrthoBoundary_ortho(CSize *Imagesize, double *Boundary,
     LonLat[3].m_X = maxLon;
     LonLat[3].m_Y = minLat;
     
-    XY          = wgs2ps(param,4, LonLat);
+    wgs2ps(param,4, LonLat, XY);
     
     t_minX      = min(min(min(XY[0].m_X,XY[1].m_X),XY[2].m_X),XY[3].m_X);
     t_maxX      = max(max(max(XY[0].m_X,XY[1].m_X),XY[2].m_X),XY[3].m_X);
