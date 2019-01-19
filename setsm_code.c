@@ -4853,7 +4853,8 @@ bool GetImageSize(char *filename, CSize *Imagesize)
         tmp = remove_ext(filename);
         sprintf(tmp,"%s.hdr",tmp);
         *Imagesize = Envihdr_reader(tmp);
-        
+        free(tmp);
+
         ret = true;
         
     }
