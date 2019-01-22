@@ -15415,6 +15415,7 @@ double MergeTiles(ProInfo info, int iter_row_start, int t_col_start, int iter_ro
         fclose(poutheader);
 
         free(DEMinter);
+        free(DEM_ortho);
         free(DEM);
         //free(Matchtag);
     }
@@ -15454,6 +15455,7 @@ double MergeTiles(ProInfo info, int iter_row_start, int t_col_start, int iter_ro
         fprintf(poutheader,"%f\t%f\t%f\t%d\t%d\n",boundary[0],boundary[3],grid_size,DEM_size.width,DEM_size.height);
         fclose(poutheader);
 
+        free(DEM_ortho);
         free(DEM);
         //free(Matchtag);
     }
