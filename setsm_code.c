@@ -8057,6 +8057,7 @@ uint16* LoadPyramidImages(char *save_path,char *subsetfile, CSize data_size, uin
     pFile           = fopen(t_str,"rb");
     if(pFile)
     {
+        free(out);
         out         = (uint16*)malloc(sizeof(uint16)*data_size.height*data_size.width);
         fread(out,sizeof(uint16),data_size.height*data_size.width,pFile);
     }
@@ -8078,6 +8079,7 @@ uint8* LoadPyramidOriImages(char *save_path,char *subsetfile, CSize data_size, u
     pFile           = fopen(t_str,"rb");
     if(pFile)
     {
+        free(out);
         out     = (uint8*)malloc(sizeof(uint8)*data_size.height*data_size.width);
         fread(out,sizeof(uint8),data_size.height*data_size.width,pFile);
     }
@@ -8101,6 +8103,7 @@ uint16* LoadPyramidMagImages(char *save_path,char *subsetfile, CSize data_size, 
     pFile           = fopen(t_str,"rb");
     if(pFile)
     {
+        free(out);
         out     = (uint16*)malloc(sizeof(uint16)*data_size.height*data_size.width);
         fread(out,sizeof(uint16),data_size.height*data_size.width,pFile);
     }
