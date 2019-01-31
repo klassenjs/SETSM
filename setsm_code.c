@@ -6006,10 +6006,10 @@ void SetHeightWithSeedDEM(ProInfo proinfo,TransParam param, UGRID *Grid, double 
             int rows[2];
             CSize data_size;
 
-            CSize *LImagesize = (CSize*)malloc(sizeof(CSize));
-            LImagesize->width = seeddem_size.width;
-            LImagesize->height = seeddem_size.height;
-            
+            CSize LImagesize;
+            LImagesize.width = seeddem_size.width;
+            LImagesize.height = seeddem_size.height;
+
             /*
             cols[0] = (int)((a_minX - minX)/grid_size + 0.5);
             cols[1] = (int)((a_maxX - minX)/grid_size + 0.5);
@@ -6022,8 +6022,8 @@ void SetHeightWithSeedDEM(ProInfo proinfo,TransParam param, UGRID *Grid, double 
             
             rows[0] = 0;
             rows[1] = seeddem_size.height;
-            
-            seeddem = Readtiff_DEM(GIMP_path,LImagesize,cols,rows,&data_size);
+
+            seeddem = Readtiff_DEM(GIMP_path,&LImagesize,cols,rows,&data_size);
             printf("Grid size %d\t%d\tcols rows %d\t%d\t%d\t%d\n",Grid_size.width,Grid_size.height,cols[0],cols[1],rows[0],rows[1]);
             
             for (row = 0; row < Grid_size.height; row ++) {
@@ -7001,27 +7001,27 @@ bool subsetImage(TransParam transparam, uint8 NumofIAparam, double **LRPCs, doub
 {
     bool ret = false;
 
-    CSize *LImagesize = (CSize*)malloc(sizeof(CSize));
-    CSize *RImagesize = (CSize*)malloc(sizeof(CSize));
+    CSize LImagesize;
+    CSize RImagesize;
 
-    if(GetImageSize(LImageFilename,LImagesize) && GetImageSize(RImageFilename,RImagesize))
+    if(GetImageSize(LImageFilename,&LImagesize) && GetImageSize(RImageFilename,&RImagesize))
     {
         int Lcols[2], Lrows[2], Rcols[2], Rrows[2];
-        if(GetsubareaImage(transparam,NumofIAparam,LRPCs,LImageParam,LImageFilename,LImagesize,subBoundary,minmaxHeight,Lcols,Lrows) &&
-           GetsubareaImage(transparam,NumofIAparam,RRPCs,RImageParam,RImageFilename,RImagesize,subBoundary,minmaxHeight,Rcols,Rrows) )
+        if(GetsubareaImage(transparam,NumofIAparam,LRPCs,LImageParam,LImageFilename,&LImagesize,subBoundary,minmaxHeight,Lcols,Lrows) &&
+           GetsubareaImage(transparam,NumofIAparam,RRPCs,RImageParam,RImageFilename,&RImagesize,subBoundary,minmaxHeight,Rcols,Rrows) )
         {
             uint16 *leftimage, *rightimage;
 
             printf("read leftimage\n");
-            leftimage   = Readtiff(LImageFilename,LImagesize,Lcols,Lrows,Lsubsetsize,check_checktiff);
+            leftimage   = Readtiff(LImageFilename,&LImagesize,Lcols,Lrows,Lsubsetsize,check_checktiff);
             if(check_checktiff)
                 exit(1);
             
             printf("read rightimage\n");
-            rightimage  = Readtiff(RImageFilename,RImagesize,Rcols,Rrows,Rsubsetsize,check_checktiff);
-            
-            
-            
+            rightimage  = Readtiff(RImageFilename,&RImagesize,Rcols,Rrows,Rsubsetsize,check_checktiff);
+
+
+
             Lstartpos->m_X  = (double)(Lcols[0]);
             Lstartpos->m_Y  = (double)(Lrows[0]);
             Rstartpos->m_X  = (double)(Rcols[0]);
@@ -7066,8 +7066,6 @@ bool subsetImage(TransParam transparam, uint8 NumofIAparam, double **LRPCs, doub
             ret     = true;
         }
     }
-    free(LImagesize);
-    free(RImagesize);
 
     return ret;
 }
@@ -18097,19 +18095,19 @@ float* GetDEMValue(char *GIMP_path,CSize seeddem_size)
         int cols[2];
         int rows[2];
         CSize data_size;
-        
-        CSize *LImagesize = (CSize*)malloc(sizeof(CSize));
-        LImagesize->width = seeddem_size.width;
-        LImagesize->height = seeddem_size.height;
-        
-        
+
+        CSize LImagesize;
+        LImagesize.width = seeddem_size.width;
+        LImagesize.height = seeddem_size.height;
+
+
         cols[0] = 0;
         cols[1] = seeddem_size.width;
         
         rows[0] = 0;
         rows[1] = seeddem_size.height;
-        
-        seeddem = Readtiff_DEM(GIMP_path,LImagesize,cols,rows,&data_size);
+
+        seeddem = Readtiff_DEM(GIMP_path,&LImagesize,cols,rows,&data_size);
         printf("tif open\n");
         
     }
@@ -18154,19 +18152,19 @@ unsigned char* GetMatchtagValue(char *GIMP_path,CSize seeddem_size)
         int cols[2];
         int rows[2];
         CSize data_size;
-        
-        CSize *LImagesize = (CSize*)malloc(sizeof(CSize));
-        LImagesize->width = seeddem_size.width;
-        LImagesize->height = seeddem_size.height;
-        
-        
+
+        CSize LImagesize;
+        LImagesize.width = seeddem_size.width;
+        LImagesize.height = seeddem_size.height;
+
+
         cols[0] = 0;
         cols[1] = seeddem_size.width;
         
         rows[0] = 0;
         rows[1] = seeddem_size.height;
-        
-        matchtag = Readtiff_BYTE(GIMP_path,LImagesize,cols,rows,&data_size);
+
+        matchtag = Readtiff_BYTE(GIMP_path,&LImagesize,cols,rows,&data_size);
         printf("tif open\n");
     }
     
