@@ -342,6 +342,8 @@ int main(int argc,char *argv[])
                     sprintf(str_matchfile,"%s_matchtag.raw",t_name);
                     sprintf(str_matchfile_tif,"%s_matchtag.tif",t_name);
                     sprintf(result_file,"%s_smooth_result.txt",t_name);
+
+                    free(tmp_chr);
                 }
                 else
                 {
@@ -767,6 +769,7 @@ int main(int argc,char *argv[])
                                     exit(0);
                                 }
                             }
+                            free(temp_path);
                         }
 
                         if(args.check_seeddem)
@@ -821,6 +824,7 @@ int main(int argc,char *argv[])
                             }
                             
                             free(Metafile1);
+                            free(temp_path);
                         }
                         
                     }
@@ -2188,9 +2192,11 @@ int Matching_SETSM(ProInfo proinfo,uint8 pyramid_step, uint8 Template_size, uint
             filename = GetFileName(proinfo.LeftImagefilename);
             filename = remove_ext(filename);
             sprintf(Lsubsetfilename,"%s/%s_subset_%d_%d.raw",proinfo.tmpdir,filename,row,col);
+            free(filename);
             filename = GetFileName(proinfo.RightImagefilename);
             filename = remove_ext(filename);
             sprintf(Rsubsetfilename,"%s/%s_subset_%d_%d.raw",proinfo.tmpdir,filename,row,col);
+            free(filename);
 
             printf("subsetimage\n");
             
@@ -3575,7 +3581,8 @@ bool OpenProject(char* _filename, ProInfo *info, ARGINFO args)
                 
                 tmp_chr = remove_ext(info->LeftImagefilename);
                 sprintf(info->LeftRPCfilename,"%s.xml",tmp_chr);
-                
+                free(tmp_chr);
+
                 FILE *temp_pFile;
                 temp_pFile           = fopen(info->LeftRPCfilename,"r");
                 //printf("xml file %s\n",info->LeftRPCfilename);
@@ -3610,7 +3617,8 @@ bool OpenProject(char* _filename, ProInfo *info, ARGINFO args)
                 
                 tmp_chr = remove_ext(info->RightImagefilename);
                 sprintf(info->RightRPCfilename,"%s.xml",tmp_chr);
-                
+                free(tmp_chr);
+
                 FILE *temp_pFile;
                 temp_pFile           = fopen(info->RightRPCfilename,"r");
                 //printf("xml file %s\n",info->RightRPCfilename);
@@ -3704,7 +3712,8 @@ bool OpenProject(char* _filename, ProInfo *info, ARGINFO args)
             
             tmp_chr = remove_ext(args.Image1);
             sprintf(info->LeftRPCfilename,"%s.xml",tmp_chr);
-            
+            free(tmp_chr);
+
             FILE *temp_pFile;
             temp_pFile           = fopen(info->LeftRPCfilename,"r");
             //printf("xml file %s\n",info->LeftRPCfilename);
@@ -3735,7 +3744,8 @@ bool OpenProject(char* _filename, ProInfo *info, ARGINFO args)
             
             tmp_chr = remove_ext(args.Image2);
             sprintf(info->RightRPCfilename,"%s.xml",tmp_chr);
-            
+            free(tmp_chr);
+
             temp_pFile           = fopen(info->RightRPCfilename,"r");
             //printf("xml file %s\n",info->RightRPCfilename);
             if(temp_pFile)
@@ -5860,6 +5870,7 @@ void SetHeightWithSeedDEM(ProInfo proinfo,TransParam param, UGRID *Grid, double 
 
             printf("hdr path %s\n",hdr_path);
             seeddem_size  = Envihdr_reader_seedDEM(param,hdr_path, &minX, &maxY, &grid_size);
+            free(hdr_path);
         }
     }
     
@@ -7902,6 +7913,7 @@ void Preprocessing(char *save_path,char *Lsubsetfile, char *Rsubsetfile, uint8 p
         }
 
         sprintf(t_str,"%s/%s_py_5.raw",save_path,filename_py);
+        free(filename_py);
         pFile_check_file    = fopen(t_str,"rb");
         if(pFile_raw && !pFile_check_file)
         {
@@ -8018,6 +8030,8 @@ void Preprocessing(char *save_path,char *Lsubsetfile, char *Rsubsetfile, uint8 p
                 free(oriimg);
             if(data_size)
                 free(data_size);
+            if(filename_py)
+                free(filename_py);
         }
         
         if(pFile_raw)
@@ -8039,6 +8053,7 @@ uint16* LoadPyramidImages(char *save_path,char *subsetfile, CSize data_size, uin
     filename_py     = remove_ext(filename_py);
 
     sprintf(t_str,"%s/%s_py_%d.raw",save_path,filename_py,py_level);
+    free(filename_py);
     pFile           = fopen(t_str,"rb");
     if(pFile)
     {
@@ -8059,6 +8074,7 @@ uint8* LoadPyramidOriImages(char *save_path,char *subsetfile, CSize data_size, u
     filename_py     = GetFileName(subsetfile);
     filename_py     = remove_ext(filename_py);
     sprintf(t_str,"%s/%s_py_%d_ori.raw",save_path,filename_py,py_level);
+    free(filename_py);
     pFile           = fopen(t_str,"rb");
     if(pFile)
     {
@@ -8081,6 +8097,7 @@ uint16* LoadPyramidMagImages(char *save_path,char *subsetfile, CSize data_size, 
     filename_py     = GetFileName(subsetfile);
     filename_py     = remove_ext(filename_py);
     sprintf(t_str,"%s/%s_py_%d_mag.raw",save_path,filename_py,py_level);
+    free(filename_py);
     pFile           = fopen(t_str,"rb");
     if(pFile)
     {
@@ -15064,48 +15081,52 @@ void RemoveFiles(char *save_path, char *lfilename, char *rfilename, int py_level
 
         filename_py     = GetFileName(lfilename);
         filename_py     = remove_ext(filename_py);
-
         sprintf(t_str,"%s/%s_py_%d.raw",save_path,filename_py,count);
-
         status = remove(t_str);
+        free(filename_py);
+
         filename_py     = GetFileName(rfilename);
         filename_py     = remove_ext(filename_py);
-
         sprintf(t_str,"%s/%s_py_%d.raw",save_path,filename_py,count);
         status = remove(t_str);
+        free(filename_py);
 
         filename_py     = GetFileName(lfilename);
         filename_py     = remove_ext(filename_py);
         sprintf(t_str,"%s/%s_py_%d_ori.raw",save_path,filename_py,count);
         status = remove(t_str);
+        free(filename_py);
 
         filename_py     = GetFileName(rfilename);
         filename_py     = remove_ext(filename_py);
         sprintf(t_str,"%s/%s_py_%d_ori.raw",save_path,filename_py,count);
         status = remove(t_str);
-        
+        free(filename_py);
+
         filename_py     = GetFileName(lfilename);
         filename_py     = remove_ext(filename_py);
         sprintf(t_str,"%s/%s_py_%d_mag.raw",save_path,filename_py,count);
         status = remove(t_str);
+        free(filename_py);
 
         filename_py     = GetFileName(rfilename);
         filename_py     = remove_ext(filename_py);
         sprintf(t_str,"%s/%s_py_%d_mag.raw",save_path,filename_py,count);
         status = remove(t_str);
- 
+        free(filename_py);
+
         filename_py     = GetFileName(lfilename);
         filename_py     = remove_ext(filename_py);
-
         sprintf(t_str,"%s/%s.raw",save_path,filename_py);
-
         status = remove(t_str);
-        
+        free(filename_py);
+
         filename_py     = GetFileName(rfilename);
         filename_py     = remove_ext(filename_py);
-
         sprintf(t_str,"%s/%s.raw",save_path,filename_py);
         status = remove(t_str);
+        free(filename_py);
+
     }
 }
 
@@ -16634,10 +16655,12 @@ void orthogeneration(TransParam _param, ARGINFO args, char *ImageFilename, char 
     }
     else
         fclose(fid_xml);
-    
+    free(tmp_chr);
+
     tmp_chr = remove_ext_ortho(DEMFilename);
     sprintf(DEM_header,"%s.hdr",tmp_chr);
-    
+    free(tmp_chr);
+
     if(pair == 1)
     {
         sprintf(OrthoFilename, "%s/%s_ortho_image1.raw", Outputpath,args.Outputpath_name);
@@ -17170,7 +17193,8 @@ bool GetImageSize_ortho(char *filename, CSize *Imagesize)
         tmp = remove_ext_ortho(filename);
         sprintf(tmp,"%s.hdr",tmp);
         *Imagesize = Envihdr_reader_ortho(tmp);
-        
+        free(tmp);
+
         ret = true;
         
     }
@@ -17929,6 +17953,7 @@ CSize GetDEMsize(char *GIMP_path, char* metafilename,TransParam* param, double *
             seeddem_size = ReadGeotiff_info(GIMP_path, &minX, &maxY, grid_size);
             check_open_header = true;
         }
+        free(hdr_path);
     }
     else if(check_ftype == 2)
     {
@@ -17943,6 +17968,7 @@ CSize GetDEMsize(char *GIMP_path, char* metafilename,TransParam* param, double *
             fclose(phdr);
             check_open_header = true;
         }
+        free(hdr_path);
     }
     
     if(pFile_meta && !check_open_header)
