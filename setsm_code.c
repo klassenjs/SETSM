@@ -390,11 +390,12 @@ int main(int argc,char *argv[])
                     sprintf(smooth_GEOTIFF_filename, "%s_smooth.tif", tmp_chr);
                     
                     int full_size = strlen(tmp_chr);
-                    t_name = (char*)malloc(sizeof(char)*(full_size-4));
+                    t_name = (char*)malloc(sizeof(char)*(full_size-3));
                     for(int kk = 0; kk < full_size-4 ; kk++)
                     {
                         t_name[kk] = tmp_chr[kk];
                     }
+                    t_name[full_size-4] = '\0'; // Need to zero terminate
                     sprintf(metafilename,"%s_meta.txt",t_name);
                     sprintf(str_matchfile,"%s_matchtag.raw",t_name);
                     sprintf(str_matchfile_tif,"%s_matchtag.tif",t_name);
